@@ -1,5 +1,3 @@
-nombre,edad,dni,profesion,activo
-
 Ingrid,14,47845231,Estudiante,False
 Pepe,31,38952159,Electricista,True
 Miriam,36,34978231,Programador/a,True
@@ -7,3 +5,6 @@ Yoselin,16,45842684,Programador/a,False
 Carla,41,27856262,Gamer,True
 Santiago,30,32569741,Gamer,False
 Enzo,12,49587236,Gamer,False
+Antonela,33,34888655,Ama de casa,False
+Eduardo,43,5454121,tecnico,False
+Mariana,25,45441218,Estudiante,False
