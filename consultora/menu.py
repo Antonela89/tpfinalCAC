@@ -7,7 +7,14 @@ while True:
         [0] Salir
         ''')
 
+
+    #while True:
+    # try:
     opcion = int(input("Ingrese una opcion: "))
+    #     break
+    # except ValueError:
+    #     print("Ingrese un numero entero")
+
     if (opcion == 0):
         break
     elif (opcion == 1):
