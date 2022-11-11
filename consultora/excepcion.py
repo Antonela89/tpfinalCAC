@@ -1,7 +1,7 @@
-def correccionErrores(entero):
+def correccionErrores(mensaje):
     while True:
         try:
-            entero = int(input("Ingrese {entero}: "))
+            entero = int(input(mensaje))
             break
         except ValueError:
             print("Ingrese un numero entero")
