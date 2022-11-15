@@ -37,6 +37,7 @@ while True:
                 crud.modificar("trabajadores.dat")
             elif (opcion == 3):
                 print('Eliminar Trabajador:')
+                crud.eliminarTrabajador("trabajadores.dat")
 
     
     elif (opcion == 2):

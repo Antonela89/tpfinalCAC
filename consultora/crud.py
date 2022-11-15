@@ -10,8 +10,7 @@ def abrirArchivo(archivo, modo):
 
 # crear listado de archivo:
 def listado(archivo):
-    listado = []
-    # devuelve lista ["Ingrid","14","47845231", "Estudiante", "False\n"]
+    listado = [] # devuelve lista ["Ingrid","14","47845231", "Estudiante", "False\n"]
     trabajadores = open(archivo, "r")
     for renglon in trabajadores.readlines():
         var = renglon.split(",")
@@ -41,14 +40,18 @@ def agregarTrabajador():
     return print(">>>Trabajador ingresado")
 
 # cambiar dato:
-def cambiarDato(dic, dato):
+def cambiarDato(dic, dato, archivo, lista):
     nuevoDato = input(f'''{dato}: ''')
     dic[dato] = nuevoDato
-    print(dic)
-    # a = open(archivo, "w")
-    # a.writelines(
-    #     f'''{lista[dic]["Nombre"]}, {str(lista[dic]["Edad"])}, {str(lista[dic]["Dni"])}, {lista[dic]["Profesion"]}, {lista[dic]["Activo"]}\n''')
-    # a.close()
+    nuevaLista = []
+    for dic in lista:
+        nuevoRenglon = f'''{dic["Nombre"]},{str(dic["Edad"])},{str(dic["Dni"])},{dic["Profesion"]},{dic["Activo"]}\n'''
+        nuevaLista.append(nuevoRenglon)
+    print(nuevaLista)
+
+    a = open(archivo, "w")
+    a.writelines(nuevaLista)
+    a.close()
 
 # modificar datos de un trabajador
 def modificar(archivo):
@@ -75,18 +78,35 @@ def modificar(archivo):
                 if (opcion == 0):
                     break
                 elif (opcion == 1):
-                    cambiarDato(elemento, "Nombre", "trabajadores.dat")
+                    cambiarDato(elemento, "Nombre", "trabajadores.dat", lista)
                 elif (opcion == 2):
-                    cambiarDato(elemento, "Edad", "trabajadores.dat")
+                    cambiarDato(elemento, "Edad", "trabajadores.dat", lista)
                 elif (opcion == 3):
-                    cambiarDato(elemento, "Dni", "trabajadores.dat")
+                    cambiarDato(elemento, "Dni", "trabajadores.dat", lista)
                 elif (opcion == 4):
-                    cambiarDato(elemento, "Profesion", "trabajadores.dat")
+                    cambiarDato(elemento, "Profesion", "trabajadores.dat", lista)
                 elif (opcion == 5):
-                    cambiarDato(elemento, "Activo", "trabajadores.dat")
+                    cambiarDato(elemento, "Activo", "trabajadores.dat", lista)
 
 
 # eliminar trabajador de archivo
+def eliminarTrabajador(archivo):
+    lista = listado(archivo)
+    nuevaLista = []
+    print(lista)
+    referencia = correccionErrores("Dni: ")
+    for elemento in lista:
+        if elemento["Dni"] == referencia:
+            lista.remove(elemento)        
+    for dic in lista:
+        nuevoRenglon = f'''{dic["Nombre"]},{str(dic["Edad"])},{str(dic["Dni"])},{dic["Profesion"]},{dic["Activo"]}\n'''
+        nuevaLista.append(nuevoRenglon)
+    print(nuevaLista)
+
+    a = open(archivo, "w")
+    a.writelines(nuevaLista)
+    a.close()
+
 
 # imprimir listado de base de datos:
 def imprimirLista(lista):
