@@ -1,5 +1,6 @@
 from excepcion import correccionErrores
 import crud
+import decoracion
 
 while True:
     print(f'''
@@ -30,6 +31,7 @@ while True:
             if (opcion == 0):
                 break
             elif (opcion == 1):
+                decoracion.decorar()
                 print('Complete los datos para ingresar nuevo Trabajador:')
                 crud.agregarTrabajador()
             elif (opcion == 2):
@@ -50,6 +52,7 @@ while True:
                 [4] Mostrar trabajadores segun la profesion
                 [0] Salir
             ''')
+
     
             opcion = correccionErrores()
             if (opcion == 0):

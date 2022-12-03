@@ -1,8 +1,8 @@
-import json
 from excepcion import correccionErrores
+import pandas as pd
+from tabulate import tabulate
 
 # funciones de gestion de datos:
-
 # abrir un archivo
 def abrirArchivo(archivo, modo):
     trabajadores = open(archivo, modo)
@@ -47,7 +47,7 @@ def cambiarDato(dic, dato, archivo, lista):
     for dic in lista:
         nuevoRenglon = f'''{dic["Nombre"]},{str(dic["Edad"])},{str(dic["Dni"])},{dic["Profesion"]},{dic["Activo"]}\n'''
         nuevaLista.append(nuevoRenglon)
-    print(nuevaLista)
+    imprimirLista(nuevaLista)
 
     a = open(archivo, "w")
     a.writelines(nuevaLista)
@@ -56,7 +56,7 @@ def cambiarDato(dic, dato, archivo, lista):
 # modificar datos de un trabajador
 def modificar(archivo):
     lista = listado(archivo)
-    print(lista)
+    imprimirLista(lista)
     referencia = correccionErrores("Dni: ")
     for elemento in lista:
         if elemento["Dni"] == referencia:
@@ -88,7 +88,6 @@ def modificar(archivo):
                 elif (opcion == 5):
                     cambiarDato(elemento, "Activo", "trabajadores.dat", lista)
 
-
 # eliminar trabajador de archivo
 def eliminarTrabajador(archivo):
     lista = listado(archivo)
@@ -101,7 +100,8 @@ def eliminarTrabajador(archivo):
     for dic in lista:
         nuevoRenglon = f'''{dic["Nombre"]},{str(dic["Edad"])},{str(dic["Dni"])},{dic["Profesion"]},{dic["Activo"]}\n'''
         nuevaLista.append(nuevoRenglon)
-    print(nuevaLista)
+    df = pd.DataFrame(nuevaLista)
+    print(df)
 
     a = open(archivo, "w")
     a.writelines(nuevaLista)
@@ -110,7 +110,9 @@ def eliminarTrabajador(archivo):
 
 # imprimir listado de base de datos:
 def imprimirLista(lista):
-    print(json.dumps(lista, sort_keys=False, indent=4))
+    df = pd.DataFrame(lista)
+
+    print(tabulate(df, headers = 'keys', tablefmt = 'fancy_grid'))
 
 # Reportes
 def armarReporte(archivo, key, value):
