@@ -1,4 +1,4 @@
-from excepcion import correccionErrores
+from excepcion import correccionNumeros
 import crud
 from decoracion import itemMenu, menu
 
@@ -11,7 +11,7 @@ while True:
         [0] Salir\n
         ''')
 
-    opcion = correccionErrores()
+    opcion = correccionNumeros()
 
     if (opcion == 0):
         break
@@ -26,7 +26,7 @@ while True:
             [0] Salir\n
             ''')
 
-            opcion = correccionErrores()
+            opcion = correccionNumeros()
 
             if (opcion == 0):
                 break
@@ -51,7 +51,7 @@ while True:
                 [0] Salir\n
             ''')
 
-            opcion = correccionErrores()
+            opcion = correccionNumeros()
 
             if (opcion == 0):
                 break
@@ -72,5 +72,9 @@ while True:
     
     elif (opcion == 3):
         itemMenu('Cambiar status trabajador: ')
+        crud.cambiarStatus('trabajadores.dat')
     else:
         itemMenu('Ingresa una opcion valida')
+
+print(crud.imprimirIntegrantes("integrantes.dat"))
+itemMenu("Fin del Programa")

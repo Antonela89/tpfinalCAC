@@ -1,7 +1,5 @@
-from excepcion import correccionErrores
-import pandas as pd
-from tabulate import tabulate
-from decoracion import decorarSalto, noIngresado
+from excepcion import correccionNumeros, correcionPalabras
+from decoracion import decorarSalto, noIngresado, itemMenu, menu, imprimirLista, imprimirElemento
 
 # funciones de gestion de datos:
 # abrir un archivo
@@ -11,8 +9,8 @@ def abrirArchivo(archivo, modo = "r"):
 
 # crear listado de archivo:
 def listado(archivo):
-    listado = [] # devuelve lista ["Ingrid","14","47845231", "Estudiante", "False\n"]
-    trabajadores = open(archivo, "r")
+    listado = []
+    trabajadores = abrirArchivo(archivo)
     for renglon in trabajadores.readlines():
         var = renglon.split(",")
         trabajador = {"Nombre": var[0], "Edad": int(var[1]), "Dni": int(var[2]), "Profesion": var[3], "Activo": (
@@ -24,24 +22,16 @@ def listado(archivo):
 # crear trabajador:
 def agregarTrabajador(archivo):
     while True:
-        nombre = input("Nombre('x' para salir): ")
-        decorarSalto()
-        if nombre == 'x':
-            noIngresado()
+        nombre = correcionPalabras("Nombre ('x' para salir): ")
+        if nombre == 'X':
             break
-        edad = correccionErrores("Edad: ")
-        if edad == "":
-            noIngresado()
-            break
-        dni = correccionErrores("Dni: ")
-        if dni == "":
-            noIngresado()
-            break
-        profesion = input("Profesion: ")
+        edad = correccionNumeros("Edad: ")
+        dni = correccionNumeros("Dni: ")
+        profesion = correcionPalabras("Profesion: ")
         if profesion == "":
             noIngresado()
             break
-        activo = input("Esta trabajando? (s/n): ")
+        activo = correcionPalabras("Esta trabajando? (s/n): ")
         if activo == "":
             noIngresado()
             break
@@ -52,7 +42,7 @@ def agregarTrabajador(archivo):
         trabajadores = abrirArchivo(archivo, "a")
         trabajadores.write(f'''{nombre},{edad},{dni},{profesion},{activo}\n''')
         trabajadores.close()
-        return print(">>>Trabajador ingresado")
+        itemMenu(">>> Trabajador ingresado <<<")
 
 # cambiar dato:
 def cambiarDato(dic, dato, archivo, lista):
@@ -60,9 +50,9 @@ def cambiarDato(dic, dato, archivo, lista):
     dic[dato] = nuevoDato
     nuevaLista = []
     for dic in lista:
-        nuevoRenglon = f'''{dic["Nombre"]},{str(dic["Edad"])},{str(dic["Dni"])},{dic["Profesion"]},{dic["Activo"]}\n'''
+        nuevoRenglon = f'''{dic["Nombre"].capitalize()},{str(dic["Edad"])},{str(dic["Dni"])},{dic["Profesion"].capitalize()},{dic["Activo"].capitalize()}\n'''
         nuevaLista.append(nuevoRenglon)
-    imprimirLista(nuevaLista)
+    imprimirElemento(nuevoRenglon.replace("\n", ""))
 
     a = open(archivo, "w")
     a.writelines(nuevaLista)
@@ -72,13 +62,13 @@ def cambiarDato(dic, dato, archivo, lista):
 def modificar(archivo):
     lista = listado(archivo)
     imprimirLista(lista)
-    referencia = correccionErrores("Dni: ")
+    referencia = correccionNumeros("Dni: ")
     for elemento in lista:
         if elemento["Dni"] == referencia:
-            print(elemento)
+            imprimirElemento(elemento)
 
             while True:
-                print(f'''
+                menu(f'''
                     Que desea modificar:
                     [1] Nombre
                     [2] Edad
@@ -88,47 +78,42 @@ def modificar(archivo):
                     [0] Salir
                 ''')
 
-                opcion = correccionErrores()
-                decorarSalto()
+                opcion = correccionNumeros()
 
                 if (opcion == 0):
                     break
                 elif (opcion == 1):
-                    cambiarDato(elemento, "Nombre", "trabajadores.dat", lista)
+                    cambiarDato(elemento,"Nombre", "trabajadores.dat",lista)
                 elif (opcion == 2):
-                    cambiarDato(elemento, "Edad", "trabajadores.dat", lista)
+                    cambiarDato(elemento,"Edad", "trabajadores.dat",lista)
                 elif (opcion == 3):
-                    cambiarDato(elemento, "Dni", "trabajadores.dat", lista)
+                    cambiarDato(elemento,"Dni", "trabajadores.dat",lista)
                 elif (opcion == 4):
-                    cambiarDato(elemento, "Profesion", "trabajadores.dat", lista)
+                    cambiarDato(elemento,"Profesion", "trabajadores.dat",lista)
                 elif (opcion == 5):
-                    cambiarDato(elemento, "Activo", "trabajadores.dat", lista)
+                    cambiarDato(elemento,"Activo", "trabajadores.dat",lista)
+        
+    if elemento["Dni"] != referencia:
+        print("Dni no encontrado")
+        decorarSalto()
 
 # eliminar trabajador de archivo
 def eliminarTrabajador(archivo):
     lista = listado(archivo)
     nuevaLista = []
-    print(lista)
-    referencia = correccionErrores("Dni: ")
+    imprimirLista(lista)
+    referencia = correccionNumeros("Dni: ")
     for elemento in lista:
         if elemento["Dni"] == referencia:
             lista.remove(elemento)        
     for dic in lista:
         nuevoRenglon = f'''{dic["Nombre"]},{str(dic["Edad"])},{str(dic["Dni"])},{dic["Profesion"]},{dic["Activo"]}\n'''
         nuevaLista.append(nuevoRenglon)
-    df = pd.DataFrame(nuevaLista)
-    print(df)
+    imprimirLista(nuevaLista)
 
     a = open(archivo, "w")
     a.writelines(nuevaLista)
     a.close()
-
-
-# imprimir listado de base de datos:
-def imprimirLista(lista):
-    df = pd.DataFrame(lista)
-
-    print(tabulate(df, headers = 'keys', tablefmt = 'fancy_grid'))
 
 # Reportes
 def armarReporte(archivo, key, value):
@@ -143,8 +128,8 @@ def armarReporte(archivo, key, value):
 def armarReporteEdad(archivo, key1, value, key2):
     lista = listado(archivo)
     reporte = []
-    desde = correccionErrores('Edad desde: ')
-    hasta = correccionErrores('Edad hasta: ')
+    desde = correccionNumeros('Edad desde: ')
+    hasta = correccionNumeros('Edad hasta: ')
     for trabajador in lista:
         estado = trabajador[key1]
         edad = trabajador[key2]    
@@ -163,5 +148,29 @@ def armarReporteProfesion(archivo, key):
             reporte.append(trabajador)
             profesionEncontrada = True
     if not profesionEncontrada:
-        print("Profesión no existente")
+        print(">>> Profesión no existente <<<")
     return imprimirLista(reporte)
+
+
+def cambiarStatus(archivo):
+    lista = listado(archivo)
+    imprimirLista(lista)
+    referencia = correccionNumeros("Dni: ")
+    for elemento in lista:
+        if elemento["Dni"] == referencia:
+            imprimirElemento(elemento)
+    cambiarDato(elemento,"Activo",archivo, lista)
+
+
+
+def imprimirIntegrantes(archivo):
+    print(f'''>>> Grupo C: <<<''')
+    integrantes = abrirArchivo(archivo)
+    listado = []
+    for renglon in integrantes.readlines():
+        var = renglon.split(",")
+        integrante = {"Nombre": var[0], "Apellido": var[1].replace("\n", "")} 
+        listado.append(integrante)
+        integrantes.close()
+    return imprimirLista(listado)
+
