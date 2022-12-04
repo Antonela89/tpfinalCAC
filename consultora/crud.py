@@ -1,10 +1,11 @@
 from excepcion import correccionErrores
 import pandas as pd
 from tabulate import tabulate
+from decoracion import decorarSalto, noIngresado
 
 # funciones de gestion de datos:
 # abrir un archivo
-def abrirArchivo(archivo, modo):
+def abrirArchivo(archivo, modo = "r"):
     trabajadores = open(archivo, modo)
     return trabajadores
 
@@ -21,23 +22,37 @@ def listado(archivo):
     return listado
 
 # crear trabajador:
-def agregarTrabajador():
+def agregarTrabajador(archivo):
     while True:
         nombre = input("Nombre('x' para salir): ")
+        decorarSalto()
         if nombre == 'x':
+            noIngresado()
             break
-        edad = input("Edad: ")
-        dni = input("Dni: ")
+        edad = correccionErrores("Edad: ")
+        if edad == "":
+            noIngresado()
+            break
+        dni = correccionErrores("Dni: ")
+        if dni == "":
+            noIngresado()
+            break
         profesion = input("Profesion: ")
+        if profesion == "":
+            noIngresado()
+            break
         activo = input("Esta trabajando? (s/n): ")
+        if activo == "":
+            noIngresado()
+            break
         if activo == "s" or activo == "S":
             activo = True
         else:
             activo = False
-        trabajadores = open("trabajadores.dat", "a")
+        trabajadores = abrirArchivo(archivo, "a")
         trabajadores.write(f'''{nombre},{edad},{dni},{profesion},{activo}\n''')
         trabajadores.close()
-    return print(">>>Trabajador ingresado")
+        return print(">>>Trabajador ingresado")
 
 # cambiar dato:
 def cambiarDato(dic, dato, archivo, lista):
@@ -74,6 +89,7 @@ def modificar(archivo):
                 ''')
 
                 opcion = correccionErrores()
+                decorarSalto()
 
                 if (opcion == 0):
                     break
