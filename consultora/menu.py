@@ -71,7 +71,7 @@ while True:
                 itemMenu('Ingresa una opcion valida')
     
     elif (opcion == 3):
-        itemMenu('Cambiar status trabajador: ')
+        itemMenu('Cambiar status trabajador, ingrese s para activo y n para inactivo: ')
         crud.cambiarStatus('trabajadores.dat')
     else:
         itemMenu('Ingresa una opcion valida')

@@ -45,7 +45,7 @@ def imprimirLista(lista):
     return df
 
 def imprimirElemento(elemento):
-    trabajador = print(json.dumps(elemento, indent=2))
+    trabajador = print(json.dumps(elemento, indent=2, ensure_ascii = False))
     decorarSalto()
     return trabajador
 

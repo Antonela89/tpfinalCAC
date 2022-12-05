@@ -1,10 +1,10 @@
-from excepcion import correccionNumeros, correcionPalabras
+from excepcion import correccionNumeros, correcionPalabras, correccionDni
 from decoracion import decorarSalto, noIngresado, itemMenu, menu, imprimirLista, imprimirElemento
 
 # funciones de gestion de datos:
 # abrir un archivo
 def abrirArchivo(archivo, modo = "r"):
-    trabajadores = open(archivo, modo)
+    trabajadores = open(archivo, modo, encoding="utf-8")
     return trabajadores
 
 # crear listado de archivo:
@@ -22,11 +22,19 @@ def listado(archivo):
 # crear trabajador:
 def agregarTrabajador(archivo):
     while True:
+        lista = listado("trabajadores.dat")
+        dni = correccionDni("Dni: ")
+        for elemento in lista:
+            encontrado = False
+            if(elemento["Dni"] == dni):
+                encontrado == True
+                dni = correccionDni("Este dni ya se encuentra registrado, ingrese otro: ")
+            else:
+                encontrado = False
         nombre = correcionPalabras("Nombre ('x' para salir): ")
         if nombre == 'X':
             break
         edad = correccionNumeros("Edad: ")
-        dni = correccionNumeros("Dni: ")
         profesion = correcionPalabras("Profesion: ")
         if profesion == "":
             noIngresado()
@@ -36,13 +44,15 @@ def agregarTrabajador(archivo):
             noIngresado()
             break
         if activo == "s" or activo == "S":
-            activo = True
+            activo = "Activo"
         else:
-            activo = False
-        trabajadores = abrirArchivo(archivo, "a")
-        trabajadores.write(f'''{nombre},{edad},{dni},{profesion},{activo}\n''')
-        trabajadores.close()
-        itemMenu(">>> Trabajador ingresado <<<")
+            activo = "Inactivo"
+
+        if (encontrado == False):
+            trabajadores = abrirArchivo(archivo, "a")
+            trabajadores.write(f'''{nombre},{edad},{dni},{profesion},{activo}\n''')
+            trabajadores.close()
+            itemMenu(">>> Trabajador ingresado <<<")
 
 # cambiar dato:
 def cambiarDato(dic, dato, archivo, lista):
@@ -50,11 +60,15 @@ def cambiarDato(dic, dato, archivo, lista):
     dic[dato] = nuevoDato
     nuevaLista = []
     for dic in lista:
+        if dic["Activo"] == "s" or dic["Activo"] == "S":
+            dic["Activo"] = "Activo"
+        else:
+            dic["Activo"] = "Inactivo"
         nuevoRenglon = f'''{dic["Nombre"].capitalize()},{str(dic["Edad"])},{str(dic["Dni"])},{dic["Profesion"].capitalize()},{dic["Activo"].capitalize()}\n'''
         nuevaLista.append(nuevoRenglon)
     imprimirElemento(nuevoRenglon.replace("\n", ""))
 
-    a = open(archivo, "w")
+    a = open(archivo,"w",encoding="utf-8")
     a.writelines(nuevaLista)
     a.close()
 
@@ -74,7 +88,7 @@ def modificar(archivo):
                     [2] Edad
                     [3] Dni
                     [4] Profesion
-                    [5] Activo
+                    [5] Activo (s/n)
                     [0] Salir
                 ''')
 
@@ -111,7 +125,7 @@ def eliminarTrabajador(archivo):
         nuevaLista.append(nuevoRenglon)
     imprimirLista(nuevaLista)
 
-    a = open(archivo, "w")
+    a = open(archivo, "w", encoding="utf-8")
     a.writelines(nuevaLista)
     a.close()
 
@@ -151,7 +165,6 @@ def armarReporteProfesion(archivo, key):
         print(">>> Profesión no existente <<<")
     return imprimirLista(reporte)
 
-
 def cambiarStatus(archivo):
     lista = listado(archivo)
     imprimirLista(lista)
@@ -160,8 +173,6 @@ def cambiarStatus(archivo):
         if elemento["Dni"] == referencia:
             imprimirElemento(elemento)
     cambiarDato(elemento,"Activo",archivo, lista)
-
-
 
 def imprimirIntegrantes(archivo):
     print(f'''>>> Grupo C: <<<''')
